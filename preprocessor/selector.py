@@ -11,10 +11,12 @@ def find_title(text):
 
     if(text := re.search(r'([\']{1})(?:(?=(\\?))\2.)*?\1', text, re.MULTILINE)) is not None:
         title = text.group()
+
+        ### .strip() NOT WORKING !!! ###
+        title = title.strip()
         return title
     else:
         return None
-
 
 def find_subheader(text):
     """ Searches for and returns the subheaders from a Wikipedia-text that has already been normalized.
@@ -72,6 +74,14 @@ def find_ew_coordinates(text):
     else:
         return None
     
+def category_finder(text):
+
+    if(text := re.findall(r'(^.*Kategorie.*$)', text, re.MULTILINE)) is not None:
+        text = [i.strip("Kategorie:") for i in text]
+        print(text)
+        return text
+    else:
+        return None
 
 # tt = """Navigationsleiste Wehrkirchen im Landkreis Eichstätt
 
@@ -81,3 +91,14 @@ def find_ew_coordinates(text):
 # e = find_ew_coordinates(tt)
 
 # print(n, e)
+
+# tex = """
+
+# Navigationsleiste Burgen und Schlösser im Landkreis Kitzingen
+
+# Kategorie:Niederungsburg in Unterfranken Rimbach
+# Kategorie:Bauwerk in Volkach
+# Kategorie:Bodendenkmal in Volkach
+# Kategorie:Abgegangenes Bauwerk im Landkreis Kitzingen
+# Kategorie:Burg in Europa Rimbach
+# Kategorie:Burg im Landkreis Kitzingen Rimbach"""

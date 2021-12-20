@@ -3,7 +3,7 @@ import os
 
 
 class Connection:
-    """Contains connection initializer and queries to communicate with the database."""
+    """ Contains connection initializer and queries to communicate with the database."""
 
     db_user = os.environ.get('WIKIDE_DB_USER')
     db_passwd = os.environ.get('WIKIDE_DB_PASSWORD')

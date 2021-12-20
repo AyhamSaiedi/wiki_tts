@@ -24,7 +24,7 @@ def clean(input_text):
     expressions_without_whitespace = {
         'datei_meta': r'(^.*Datei.*$)',
         'bild_meta': r'(^.*Bild.*$)',
-        'kategorie_meta': r'(^.*Kategorie.*$)',
+        #'kategorie_meta': r'(^.*Kategorie.*$)',
         'all_brackets': r'([\[\]])|([\(\)])|([\{\}])',
         'reveal_title': r'(([\']{2}))',
         'http_links': r'(http\S+)',

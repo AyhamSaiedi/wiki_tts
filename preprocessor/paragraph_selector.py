@@ -11,6 +11,8 @@ text = [' history this right here is something to test our data with it has got 
         'consider this is also interesting what do you better though you have to find out soon you are required to do so, so tell me please']
 
 
+### STILL CAN'T RETURN THE LAST PARAGRAPHS !!!!!!!!!!!!!!!
+
 def paragrapher(input_iterable, input_text):
 
     def pairwise(input_iterable):
@@ -30,6 +32,8 @@ def paragrapher(input_iterable, input_text):
         new_new.append(regex)
 
     return new_new
+
+#test = paragrapher(headers, text)
 
 # Merging and applying DataFrame.
 # article = {
