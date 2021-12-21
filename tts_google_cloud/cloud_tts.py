@@ -38,5 +38,5 @@ def tts(input_text):
         print('Audio content written to file "output.mp3"')
 
 
-t = "Ach! So ein Scheiß. Oder auch nicht."
+t = "Erster Versuch, zweiter Versuch"
 f = tts(t)
