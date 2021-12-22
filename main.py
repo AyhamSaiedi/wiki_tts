@@ -14,7 +14,7 @@ import pprint
 # Establish connection with the DB and select table
 # Selecting through following parameters: table name, column name and an optional specific query
 con = connection.Connection()
-query_content = con.select_column('text', 'old_text', 'WHERE old_id > 1230 AND old_id < 1240')
+query_content = con.select_column('text', 'old_text')
 #con.terminate_connection()
 
 
@@ -35,6 +35,8 @@ wiki_url_title = list(map(lambda y: title_transformation_for_mediawiki_api.wiki_
 article_subheaders = list(map(lambda z: selector.find_subheader(z), text_transformed))
 cleaned_subheaders = selector.clean_subheaders(article_subheaders)
 
+categories = list(map(lambda x, y: selector.category_finder(x, y), text_transformed, article_title))
+
 article_summary = list(map(lambda x, y: summary.article_intro(x, y), text_transformed, article_title))
 
 change_is_minor = list(map(lambda x: wiki_versioning.find_if_minor(x), wiki_url_title))
@@ -45,20 +47,30 @@ preprocessed_data = {
     'title': article_title,
     'wiki_title': wiki_url_title,
     'article': text_transformed,
+    'categories': categories,
     'subheaders': cleaned_subheaders,
     'coordinates': zipped_coordinates,
     'intro': article_summary,
     'latest update is minor': change_is_minor
 }
 
+for_excel = {
+    'title': article_title,
+    'wiki_title': wiki_url_title,
+    'categories': categories,
+    'coordinates': zipped_coordinates,
+    'article': text_transformed
+}
 
+to_excel = pd.DataFrame.from_dict(for_excel)
+to_excel.to_excel('pandas_to_excel.xlsx', sheet_name='categories')
 
 ###     Creating a preprocessed_data_df DataFrame to hold our preprocessed data     ###
 preprocessed_data_df = pd.DataFrame.from_dict(preprocessed_data)
 preprocessed_data_df['paragraphs'] = preprocessed_data_df.apply(
     lambda x: paragraph_selector.paragrapher(x.subheaders, x.article), axis=1)
-preprocessed_data_df['category'] = preprocessed_data_df.apply(
-    lambda x: selector.category_finder(x.article), axis=1)
+# preprocessed_data_df['category'] = preprocessed_data_df.apply(
+#     lambda x: selector.category_finder(x.article), axis=1)
 # nRow, nCol = preprocessed_data_df.shape
 # print(f'There are {nRow} rows and {nCol} columns.')
 #print(preprocessed_data_df['category'].sample(n=5, random_state=1))
@@ -69,13 +81,15 @@ preprocessed_data_df['category'] = preprocessed_data_df.apply(
 preprocessed_data_df['wiki_id'] = preprocessed_data_df.apply(
     lambda x: mediawiki_api.get_id(x.title), axis=1)
 id_dict = dict(zip(preprocessed_data_df.title, preprocessed_data_df.wiki_id))
+
+
 #print(id_dict)
 # print(preprocessed_data_df['wiki_id'])
 titles = preprocessed_data_df['title'].unique()
 for title in titles:
     preprocessed_data_df.loc[preprocessed_data_df['title'] == title, 'UUID'] = uuid.uuid4()
 
-print(preprocessed_data_df['category'])
+#print(preprocessed_data_df['title'], preprocessed_data_df['categories'])
 
 
 dict_ready_for_db = preprocessed_data_df.to_dict(orient='dict')
@@ -104,7 +118,7 @@ preprocessed_data_df.isnull().sum()
 
 ###     Saving into external files     ###
 with open('output.txt', 'w') as opened_file:
-    final = text_transformed[3]
+    final = text_transformed[0]
     #opened_file.write("titel:" + article_title + "\n")
     opened_file.write(final)
 # concatinate = [preprocessed_data_df['title'], preprocessed_data_df['article'], preprocessed_data_df['']]

@@ -74,11 +74,13 @@ def find_ew_coordinates(text):
     else:
         return None
     
-def category_finder(text):
+def category_finder(text, title):
+
+    if title is None:
+        return None
 
     if(text := re.findall(r'(^.*Kategorie.*$)', text, re.MULTILINE)) is not None:
         text = [i.strip("Kategorie:") for i in text]
-        print(text)
         return text
     else:
         return None
